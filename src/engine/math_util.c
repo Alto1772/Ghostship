@@ -156,12 +156,13 @@ void *vec3f_normalize(Vec3f dest) {
 
 /// Copy matrix 'src' to 'dest'
 void mtxf_copy(Mat4 dest, Mat4 src) {
-    register s32 i;
-    register u32 *d = (u32 *) dest;
-    register u32 *s = (u32 *) src;
-
-    for (i = 0; i < 16; i++) {
-        *d++ = *s++;
+    // Original decomp implementation breaks on GCC upon optimization
+    // (which in the case of mtxf_mul, renders incorrect values).
+    // Replaced with a much simpler and clearer approach to satisfy compiler
+    for (s32 i = 0; i < 4; i++) {
+        for (s32 j = 0; j < 4; j++) {
+            dest[i][j] = src[i][j];
+        }
     }
 }
 
